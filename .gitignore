@@ -1,0 +1,5 @@
+.vercel
+.env
+firebasee-admin-sdk.json
+output.txt
+node_modules
