@@ -402,71 +402,67 @@ async function run() {
 
     //***********/ Application related apis **************//
 
-     // GET all applied scholarships
-       app.get("/applied-scholarships", verifyFBToken, async (req, res) => {
-         console.log("headers in all applied", req.headers);
-         try {
-           const sort = req.query.sort;
-           let sortOption = {};
-           if (sort === "date") {
-             sortOption = { date: -1 }; // latest applications first
-           } else if (sort === "deadline") {
-             sortOption = { deadline: 1 }; // earliest deadline first
-           }
-   
-           const result = await applicationCollection
-             .find()
-             .sort(sortOption)
-             .toArray();
-           res.send(result);
-         } catch (err) {
-           res.status(500).send({ error: "Failed to fetch applications" });
-         }
-       });
+    // GET all applied scholarships
+    app.get("/applied-scholarships", verifyFBToken, async (req, res) => {
+      console.log("headers in all applied", req.headers);
+      try {
+        const sort = req.query.sort;
+        let sortOption = {};
+        if (sort === "date") {
+          sortOption = { date: -1 }; // latest applications first
+        } else if (sort === "deadline") {
+          sortOption = { deadline: 1 }; // earliest deadline first
+        }
 
+        const result = await applicationCollection
+          .find()
+          .sort(sortOption)
+          .toArray();
+        res.send(result);
+      } catch (err) {
+        res.status(500).send({ error: "Failed to fetch applications" });
+      }
+    });
 
+    // GET /applications?userEmail=email@example.com
+    app.get("/applications", verifyFBToken, async (req, res) => {
+      const userEmail = req.query.userEmail;
 
-         // GET /applications?userEmail=email@example.com
-       app.get("/applications", verifyFBToken, async (req, res) => {
-         const userEmail = req.query.userEmail;
-   
-         if (!userEmail) {
-           return res
-             .status(400)
-             .json({ error: "userEmail query parameter is required" });
-         }
-   
-         try {
-           const applications = await applicationCollection
-             .find({ userEmail })
-             .toArray();
-           res.status(200).json(applications);
-         } catch (error) {
-           console.error(error);
-           res.status(500).json({ error: "Failed to fetch applications" });
-         }
-       });
+      if (!userEmail) {
+        return res
+          .status(400)
+          .json({ error: "userEmail query parameter is required" });
+      }
 
+      try {
+        const applications = await applicationCollection
+          .find({ userEmail })
+          .toArray();
+        res.status(200).json(applications);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to fetch applications" });
+      }
+    });
 
-        //PUT Update application
-   
-       app.put("/applications/:id", async (req, res) => {
-         const id = req.params.id;
-         const updateDoc = {
-           $set: req.body,
-         };
-   
-         try {
-           const result = await applicationCollection.updateOne(
-             { _id: new ObjectId(id) },
-             updateDoc
-           );
-           res.send(result);
-         } catch (error) {
-           res.status(500).send({ error: "Failed to update application" });
-         }
-       });
+    //PUT Update application
 
+    app.put("/applications/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateDoc = {
+        $set: req.body,
+      };
+
+      try {
+        const result = await applicationCollection.updateOne(
+          { _id: new ObjectId(id) },
+          updateDoc
+        );
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to update application" });
+      }
+    });
 
     /// DELETE: delete application
 
@@ -535,22 +531,21 @@ async function run() {
     //***********/ Review related apis **************//
 
     // GET: all reviews (for moderator)
-        app.get("/reviews", async (req, res) => {
-          try {
-            const reviews = await reviewCollection
-              .find()
-              .sort({ date: -1 })
-              .toArray();
-            res.send(reviews);
-          } catch (error) {
-            console.error("Failed to fetch reviews:", error);
-            res.status(500).send({ error: "Failed to fetch reviews" });
-          }
-        });
+    app.get("/reviews", async (req, res) => {
+      try {
+        const reviews = await reviewCollection
+          .find()
+          .sort({ date: -1 })
+          .toArray();
+        res.send(reviews);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+        res.status(500).send({ error: "Failed to fetch reviews" });
+      }
+    });
 
+    //get review by id
 
-        //get review by id
-        
     app.get("/reviews/:scholarshipId", verifyFBToken, async (req, res) => {
       const { scholarshipId } = req.params;
       try {
@@ -565,8 +560,7 @@ async function run() {
       }
     });
 
-
-       // DELETE: a review by ID
+    // DELETE: a review by ID
     app.delete("/reviews/:id", async (req, res) => {
       try {
         const id = req.params.id;
@@ -585,9 +579,8 @@ async function run() {
       }
     });
 
-
-     // GET /reviews?email=user@example.com
-    app.get("/reviews-by-email",  async (req, res) => {
+    // GET /reviews?email=user@example.com
+    app.get("/reviews-by-email", async (req, res) => {
       const email = req.query.email;
       if (!email) return res.status(400).send({ error: "Email is required" });
       try {
@@ -600,8 +593,7 @@ async function run() {
       }
     });
 
-
-      //DELETE: delete a review
+    //DELETE: delete a review
     app.delete("/reviews/:id", async (req, res) => {
       const id = req.params.id;
       try {
@@ -614,7 +606,7 @@ async function run() {
       }
     });
 
-     //PUT: edit a review
+    //PUT: edit a review
     app.put("/reviews/:id", async (req, res) => {
       const id = req.params.id;
       const updateDoc = {
@@ -635,8 +627,7 @@ async function run() {
       }
     });
 
-
-     //POST: post a review
+    //POST: post a review
     app.post("/reviews", async (req, res) => {
       const review = req.body;
 
@@ -648,7 +639,7 @@ async function run() {
         res.status(500).send({ error: "Failed to post review" });
       }
     });
-   
+
     //***********/ Count related apis **************//
 
     app.get("/stats", async (req, res) => {
