@@ -447,6 +447,27 @@ async function run() {
          }
        });
 
+
+        //PUT Update application
+   
+       app.put("/applications/:id", async (req, res) => {
+         const id = req.params.id;
+         const updateDoc = {
+           $set: req.body,
+         };
+   
+         try {
+           const result = await applicationCollection.updateOne(
+             { _id: new ObjectId(id) },
+             updateDoc
+           );
+           res.send(result);
+         } catch (error) {
+           res.status(500).send({ error: "Failed to update application" });
+         }
+       });
+
+
     /// DELETE: delete application
 
     app.delete("/applications/:id", async (req, res) => {
