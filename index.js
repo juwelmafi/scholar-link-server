@@ -66,7 +66,7 @@ async function run() {
 
     const verifyAdmin = async (req, res, next) => {
       const email = req.decoded.email;
-      console.log(email);
+      // console.log(email);
       const query = { email };
       const user = await usersCollection.findOne(query);
       if (!user || user.role !== "admin") {
@@ -404,7 +404,7 @@ async function run() {
 
     // GET all applied scholarships
     app.get("/applied-scholarships", verifyFBToken, async (req, res) => {
-      console.log("headers in all applied", req.headers);
+      // console.log("headers in all applied", req.headers);
       try {
         const sort = req.query.sort;
         let sortOption = {};
