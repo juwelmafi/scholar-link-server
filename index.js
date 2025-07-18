@@ -424,6 +424,29 @@ async function run() {
          }
        });
 
+
+
+         // GET /applications?userEmail=email@example.com
+       app.get("/applications", verifyFBToken, async (req, res) => {
+         const userEmail = req.query.userEmail;
+   
+         if (!userEmail) {
+           return res
+             .status(400)
+             .json({ error: "userEmail query parameter is required" });
+         }
+   
+         try {
+           const applications = await applicationCollection
+             .find({ userEmail })
+             .toArray();
+           res.status(200).json(applications);
+         } catch (error) {
+           console.error(error);
+           res.status(500).json({ error: "Failed to fetch applications" });
+         }
+       });
+
     /// DELETE: delete application
 
     app.delete("/applications/:id", async (req, res) => {
