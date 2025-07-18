@@ -402,67 +402,27 @@ async function run() {
 
     //***********/ Application related apis **************//
 
-    // GET all applied scholarships
-    app.get("/applied-scholarships", verifyFBToken, async (req, res) => {
-      console.log("headers in all applied", req.headers);
-      try {
-        const sort = req.query.sort;
-        let sortOption = {};
-        if (sort === "date") {
-          sortOption = { date: -1 }; // latest applications first
-        } else if (sort === "deadline") {
-          sortOption = { deadline: 1 }; // earliest deadline first
-        }
-
-        const result = await applicationCollection
-          .find()
-          .sort(sortOption)
-          .toArray();
-        res.send(result);
-      } catch (err) {
-        res.status(500).send({ error: "Failed to fetch applications" });
-      }
-    });
-
-    // GET /applications?userEmail=email@example.com
-    app.get("/applications", verifyFBToken, async (req, res) => {
-      const userEmail = req.query.userEmail;
-
-      if (!userEmail) {
-        return res
-          .status(400)
-          .json({ error: "userEmail query parameter is required" });
-      }
-
-      try {
-        const applications = await applicationCollection
-          .find({ userEmail })
-          .toArray();
-        res.status(200).json(applications);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Failed to fetch applications" });
-      }
-    });
-
-    //PUT Update application
-
-    app.put("/applications/:id", async (req, res) => {
-      const id = req.params.id;
-      const updateDoc = {
-        $set: req.body,
-      };
-
-      try {
-        const result = await applicationCollection.updateOne(
-          { _id: new ObjectId(id) },
-          updateDoc
-        );
-        res.send(result);
-      } catch (error) {
-        res.status(500).send({ error: "Failed to update application" });
-      }
-    });
+     // GET all applied scholarships
+       app.get("/applied-scholarships", verifyFBToken, async (req, res) => {
+         console.log("headers in all applied", req.headers);
+         try {
+           const sort = req.query.sort;
+           let sortOption = {};
+           if (sort === "date") {
+             sortOption = { date: -1 }; // latest applications first
+           } else if (sort === "deadline") {
+             sortOption = { deadline: 1 }; // earliest deadline first
+           }
+   
+           const result = await applicationCollection
+             .find()
+             .sort(sortOption)
+             .toArray();
+           res.send(result);
+         } catch (err) {
+           res.status(500).send({ error: "Failed to fetch applications" });
+         }
+       });
 
     /// DELETE: delete application
 
