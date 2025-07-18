@@ -597,6 +597,19 @@ async function run() {
     });
 
 
+      //DELETE: delete a review
+    app.delete("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      try {
+        const result = await reviewCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to delete review" });
+      }
+    });
+
     
    
     //***********/ Count related apis **************//
