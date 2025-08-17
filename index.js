@@ -608,6 +608,30 @@ async function run() {
       }
     });
 
+
+     //PUT: edit a review
+    app.put("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateDoc = {
+        $set: {
+          ...req.body,
+          updated_at: new Date(),
+        },
+      };
+
+      try {
+        const result = await reviewCollection.updateOne(
+          { _id: new ObjectId(id) },
+          updateDoc
+        );
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to update review" });
+      }
+    });
+
+    
+
     //***********/ Count related apis **************//
 
     app.get("/stats", async (req, res) => {
