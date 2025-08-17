@@ -544,7 +544,21 @@ async function run() {
       }
     });
 
-    
+    //get review by id
+
+    app.get("/reviews/:scholarshipId", verifyFBToken, async (req, res) => {
+      const { scholarshipId } = req.params;
+      try {
+        const reviews = await reviewCollection
+          .find({ scholarshipId })
+          .sort({ date: -1 }) // recent first
+          .toArray();
+
+        res.send(reviews);
+      } catch (error) {
+        res.status(500).send({ message: "Failed to fetch reviews" });
+      }
+    });
 
     //***********/ Count related apis **************//
 
