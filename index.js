@@ -581,7 +581,19 @@ async function run() {
       }
     });
 
-
+    // GET /reviews?email=user@example.com
+    app.get("/reviews-by-email", async (req, res) => {
+      const email = req.query.email;
+      if (!email) return res.status(400).send({ error: "Email is required" });
+      try {
+        const result = await reviewCollection
+          .find({ userEmail: email })
+          .toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to fetch reviews" });
+      }
+    });
 
     //***********/ Count related apis **************//
 
