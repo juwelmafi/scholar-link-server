@@ -560,6 +560,29 @@ async function run() {
       }
     });
 
+    
+
+    // DELETE: a review by ID
+    app.delete("/reviews/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const result = await reviewCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+
+        if (result.deletedCount === 1) {
+          res.send({ success: true, message: "Review deleted" });
+        } else {
+          res.status(404).send({ error: "Review not found" });
+        }
+      } catch (error) {
+        console.error("Failed to delete review:", error);
+        res.status(500).send({ error: "Failed to delete review" });
+      }
+    });
+
+
+
     //***********/ Count related apis **************//
 
     app.get("/stats", async (req, res) => {
