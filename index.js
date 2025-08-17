@@ -630,6 +630,19 @@ async function run() {
       }
     });
 
+    //POST: post a review
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+
+      try {
+        const result = await reviewCollection.insertOne(review);
+        res.send(result);
+      } catch (error) {
+        console.error("Review Error:", error);
+        res.status(500).send({ error: "Failed to post review" });
+      }
+    });
+
     
 
     //***********/ Count related apis **************//
