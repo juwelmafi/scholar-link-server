@@ -530,7 +530,21 @@ async function run() {
 
     //***********/ Review related apis **************//
 
+// GET: all reviews (for moderator)
+    app.get("/reviews", async (req, res) => {
+      try {
+        const reviews = await reviewCollection
+          .find()
+          .sort({ date: -1 })
+          .toArray();
+        res.send(reviews);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+        res.status(500).send({ error: "Failed to fetch reviews" });
+      }
+    });
 
+    
 
     //***********/ Count related apis **************//
 
